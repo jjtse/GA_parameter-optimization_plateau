@@ -11,9 +11,29 @@ import math
 # vol:最小vol至最大vol,間距為(最大vol-最小vol)/15
 # D:3至20
 
+def history_data():
+    csv_file = "2912.csv"
+    csv_data = pd.read_csv(csv_file, index_col=0)
+    date_index = list(csv_data.index.values)
+    close = csv_data.iloc[0:len(csv_data),3]
+    std = close.rolling(20).std(ddof=0)
+    stkclose = []
+    stdvalue = []
+
+    for data in close:
+        stkclose.append(data)
+    for data in std:
+        stdvalue.append(data)
+
+    return stkclose, stdvalue, close, std
 
 def trade(ma_value, std_filter):
-
+    
+    stkclose = history_data()[0]
+    stdvalue = history_data()[1]
+    close = history_data()[2]
+    std = history_data()[3]
+    
     maprice = []
     MA = close.rolling(ma_value).mean()
 
@@ -60,19 +80,51 @@ def trade(ma_value, std_filter):
         return sharpe
 
 
+# 多維參數夏普比率計算
+def sharpe():
+
+    std = history_data()[3]
+    std_max = std.max()
+    std_min = std.min()
+    std_range = (std_max-std_min)/15
+
+    row = []
+    col = []
+    for i in range(3, 21):
+        row.append(i)
+    for j in np.arange(std_min, std_max, std_range):
+        j = round(j, 1)
+        col.append(j)
+
+    result = []
+
+    for i in range(3, 21):
+        result.append([])
+        for j in np.arange(std_min, std_max, std_range):
+            j = round(j, 1)
+            result[i-3].append(trade(i, j))
+            
+    # a=pd.DataFrame(result)
+    # a.index = row
+    # a.columns = col
+    # # print(a)
+    # a.to_csv("2912_shapre_ratio.csv")
+
+    return result
+
 if __name__ == '__main__':
 
-    csv_file = "2912.csv"
-    csv_data = pd.read_csv(csv_file, index_col=0)
-    date_index = list(csv_data.index.values)
-    close = csv_data.iloc[0:len(csv_data),3]
-    std = close.rolling(20).std(ddof=0)
-    stkclose = []
-    stdvalue = []
+    # csv_file = "2912.csv"
+    # csv_data = pd.read_csv(csv_file, index_col=0)
+    # date_index = list(csv_data.index.values)
+    # close = csv_data.iloc[0:len(csv_data),3]
+    # std = close.rolling(20).std(ddof=0)
+    # stkclose = []
+    # stdvalue = []
 
-    for data in close:
-        stkclose.append(data)
-    for data in std:
-        stdvalue.append(data)
-
-    # print(trade(18,1.9))
+    # for data in close:
+    #     stkclose.append(data)
+    # for data in std:
+    #     stdvalue.append(data)
+    sharpe()
+    print(trade(18,1.9))

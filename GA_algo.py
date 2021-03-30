@@ -1,8 +1,8 @@
 import math
 
 from geneEncoding import geneEncoding
-from sharpe import trade
-from sharpe import plateau_score
+from strategy import trade
+from step import plateau_score
 
 pop_size = 100  # 种群数量
 x_chromosome = 4

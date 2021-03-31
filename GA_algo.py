@@ -3,15 +3,16 @@ import pandas as pd
 
 from geneEncoding import geneEncoding
 from selection import selection
+from crossover import *
 from plateau_score import plateau_score
 
-pop_size = 50  # 种群数量
+pop_size = 30  # 种群数量
 x_chromosome = 4
 y_chromosome = 5
 chromosome_length = x_chromosome + y_chromosome  # 染色體長度
 results = []  # 儲存每一代的最優解
-pc = 0.6			# 交配概率
-pm = 0.01           # 变异概率
+crossover_probability = 0.6			# 交配概率
+mutation_probability = 0.01           # 变异概率
 
 # 編碼
 pop = geneEncoding(pop_size, chromosome_length)
@@ -75,34 +76,51 @@ def best(pop, obj_value):
             best_individual = pop[0]
     return [best_individual, best_fit]
 
-
+# 解碼最佳個體
 def binary(best_individual):
     x_power = 3
     x = 0
     for j in range(4):
         x += best_individual[j] * (math.pow(2, x_power))
+        x = int(x)
         x_power -= 1
+        if x > max_x_value:
+            x = max_x_value
     
     y_power = 4
     y = 0
     for j in range(4, len(best_individual)):
         y += best_individual[j] * (math.pow(2, y_power))
-        y_power = y_power - 1
+        y = int(y)
+        y_power -= 1
+        if y > max_y_value:
+            y = max_y_value
+
+    x = column_list[int(x)]
+    y = index_list[int(y)]
+
     return x, y
+
 
 if __name__ == '__main__':
 
     heatmap_df = pd.read_csv("2912_shapre_ratio.csv", index_col=0)
     df_list = heatmap_df.values.tolist()
-    index_list = list(heatmap_df.index.values)
-    column_list = list(heatmap_df.columns)
+    index_list = list(heatmap_df.index)
+    column_list = list(pd.to_numeric(heatmap_df.columns))
+ 
     # 編碼的max_value設定
     max_x_value = len(column_list)-1
     max_y_value = len(index_list)-1
 
-    obj_value = calobjValue(pop)  # 個體評價
-    print(best(pop, obj_value))
-    best_individual, best_fit = best(pop, obj_value)  # 最佳個體的基因和高原分數
-    results.append([best_fit, binary(best_individual)])
-    print(results)
-    
+    for i in range(pop_size):
+        obj_value = calobjValue(pop)  # 個體評價
+        # print(best(pop, obj_value))
+        best_individual, best_fit = best(pop, obj_value)  # 最佳個體的基因和高原分數
+        results.append([best_fit, binary(best_individual)])
+        selection(pop, obj_value)
+        crossover(pop, crossover_probability)  # 交配
+        mutation(pop, mutation_probability)   # 變異
+    results.sort()
+    print(results[-1])
+    print ("高原分數 = ",results[-1][0], "座標 = " , results[-1][1])

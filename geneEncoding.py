@@ -1,4 +1,3 @@
-# 0.0 coding:utf-8 0.0
 import random
 import math
 

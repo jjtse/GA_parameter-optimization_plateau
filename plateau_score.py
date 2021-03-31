@@ -36,7 +36,6 @@ def plateau_score(df_list, index, columns, n, m):
 
     return round(score, 5)
 
-
 # 整個df的高原分數
 def score_heatmap(heatmap_df):
 
@@ -57,7 +56,9 @@ def score_heatmap(heatmap_df):
     # plt.title("plateau_score")
     # plt.show()
 
-    return score_df
+    score_max = score_df.max().max()
+    print(score_max)
+    return score_max
 
 
 if __name__ == '__main__':

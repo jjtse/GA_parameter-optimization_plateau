@@ -1,8 +1,5 @@
-# 0.0 coding:utf-8 0.0
-# 选择
-
 import random
-
+from geneEncoding import geneEncoding
 
 def sum(fit_value):
 	total = 0
@@ -19,33 +16,33 @@ def cumsum(fit_value):
 			t += fit_value[j]
 			j += 1
 		fit_value[i] = t
-		fit_value[len(fit_value)-1] = 1
+		fit_value[len(fit_value)-1] = 1  # 最後收斂為1
 
 
 def selection(pop, fit_value):
 	newfit_value = []
-	# 适应度总和
-	total_fit = sum(fit_value)
+	total_fit = sum(fit_value)  # 適合度總和
 	for i in range(len(fit_value)):
-		newfit_value.append(fit_value[i] / total_fit)
-	# 计算累计概率
-	cumsum(newfit_value)
-	ms = []
-	pop_len = len(pop)
-	for i in range(pop_len):
-		ms.append(random.random())
-	ms.sort()
+		newfit_value.append(fit_value[i] / total_fit)  # 重要性占比
+	
+	cumsum(newfit_value)  # 累加概率
+	random_number = []  # 隨機產生0-1之間的亂數
+	for i in range(len(pop)):
+		random_number.append(random.random())
+	random_number.sort()
 	fitin = 0
 	newin = 0
 	newpop = pop
-	# 转轮盘选择法
-	while newin < pop_len:
-		if(ms[newin] < newfit_value[fitin]):
+	# 轉輪盤選擇法
+	# 如果累加概率>隨機亂數(從最小的開始比對)，則保留原本的基因
+	while newin < len(pop):
+		if(random_number[newin] < newfit_value[fitin]):
 			newpop[newin] = pop[fitin]
 			newin = newin + 1
 		else:
 			fitin = fitin + 1
 	pop = newpop
 
+
 if __name__ == '__main__':
-    pass
+	pass

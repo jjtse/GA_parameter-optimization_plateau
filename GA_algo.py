@@ -53,10 +53,10 @@ def calobjValue(pop):
     temp2 = decode_y(pop)
     for i in range(len(temp1)):
         if temp1[i] > max_x_value or temp2[i] > max_y_value:
-            obj_value.append(-1)
-            
+            obj_value.append(0)
+
         else:
-            obj_value.append(plateau_score(df_list, temp2[i], temp1[i], 3, 0.1))
+            obj_value.append(plateau_score(df_list, temp2[i], temp1[i], 5, 0.5))  # 高原分數
 
     return obj_value
 
@@ -66,10 +66,10 @@ def best(pop, obj_value):
     best_individual = []
     best_fit = obj_value[0]
     for i in range(1, len(pop)):
-        if (obj_value[i] > best_fit):
+        if obj_value[i] > best_fit:
             best_fit = obj_value[i]
             best_individual = pop[i]
-        if (best_fit == obj_value[0]):
+        if best_fit == obj_value[0]:
             best_individual = pop[0]
     return [best_individual, best_fit]
 
@@ -113,32 +113,32 @@ if __name__ == '__main__':
     max_x_value = len(column_list) - 1
     max_y_value = len(index_list) - 1
 
-    pop_size = 50  # 种群数量
+    pop_size = 12  # 种群数量
     x_chromosome = 4
     y_chromosome = 5
     chromosome_length = x_chromosome + y_chromosome  # 染色體長度
     results = []  # 儲存每一代的最優解
-    crossover_probability = 0.2  # 交配概率
-    mutation_probability = 0.01  # 变异概率
+    crossover_probability = 0.6  # 交配概率
+    mutation_probability = 0.1  # 变异概率
 
-    # 編碼
-    pop = geneEncoding(pop_size, chromosome_length)
+    n = 0
+    while n < 10:
+        # 編碼
+        pop = geneEncoding(pop_size, chromosome_length)
 
-    print(decode_x(pop))
-    print(decode_y(pop))
-    print(calobjValue(pop))
+        for i in range(pop_size):
+            obj_value = calobjValue(pop)  # 個體評價
+            # print(best(pop, obj_value))
+            best_individual, best_fit = best(pop, obj_value)  # 最佳個體的基因和高原分數
+            results.append([best_fit, binary(best_individual)])
+            selection(pop, obj_value)
+            crossover(pop, crossover_probability)  # 交配
+            mutation(pop, mutation_probability)  # 變異
+        results.sort()
+        print(results)
+        print("高原分數 = ", results[-1][0], "座標 = ", results[-1][1])
 
-    # for i in range(pop_size):
-    #     obj_value = calobjValue(pop)  # 個體評價
-    #     # print(best(pop, obj_value))
-    #     best_individual, best_fit = best(pop, obj_value)  # 最佳個體的基因和高原分數
-    #     results.append([best_fit, binary(best_individual)])
-    #     selection(pop, obj_value)
-    #     crossover(pop, crossover_probability)  # 交配
-    #     mutation(pop, mutation_probability)  # 變異
-    # results.sort()
-    # print(results)
-    # print("高原分數 = ", results[-1][0], "座標 = ", results[-1][1])
-    #
-    # time_end = time.time()
-    # print('time elapsed: ' + str(time_end - time_start) + ' seconds')
+        time_end = time.time()
+        print('time elapsed: ' + str(time_end - time_start) + ' seconds')
+
+        n += 1

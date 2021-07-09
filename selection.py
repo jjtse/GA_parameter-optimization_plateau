@@ -23,7 +23,10 @@ def selection(pop, fit_value):
 	newfit_value = []
 	total_fit = sum(fit_value)  # 適合度總和
 	for i in range(len(fit_value)):
-		newfit_value.append(fit_value[i] / total_fit)  # 重要性占比
+		if total_fit != 0:
+			newfit_value.append(fit_value[i] / total_fit)  # 重要性占比
+		else:
+			newfit_value.append(0)
 	
 	cumsum(newfit_value)  # 累加概率
 	random_number = []  # 隨機產生0-1之間的亂數

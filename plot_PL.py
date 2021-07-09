@@ -11,14 +11,14 @@ df_list = pd.read_csv("2912_shapre_ratio.csv", index_col=0)
 csv_data = pd.read_csv(file_name, index_col=0)
 max_date = date_index = list(csv_data.index.values)
 max_date = pd.to_datetime(max_date)
-train_total = [trade(file_name, 18, 1.9), trade(file_name, 17, 1.9), trade(file_name, 18, 2.7)]
+train_total = [trade(file_name, 18, 1.9), trade(file_name, 18, 1.9), trade(file_name, 18, 2.7)]
 gray_train_total = sharpe(file_name)
 
 file_name = "2912_test.csv"
 csv_data = pd.read_csv(file_name, index_col=0)
 date_index = list(csv_data.index.values)
 date_index = pd.to_datetime(date_index)
-test_total = [trade(file_name, 18, 1.9), trade(file_name, 17, 1.9), trade(file_name, 18, 2.7)]
+test_total = [trade(file_name, 18, 1.9), trade(file_name, 18, 1.9), trade(file_name, 18, 2.7)]
 test_total = np.array(test_total)
 gray_test_total = sharpe(file_name)
 gray_test_total = np.array(gray_test_total)
@@ -34,9 +34,9 @@ for i in range(0, 18, 2):
         ax1.plot(date_index, gray_test_total[i][j], 'lightgray')
 
 # train
-line1, = ax1.plot(max_date, train_total[0], 'darkorange', linewidth=2.5, label='A')
-line2, = ax1.plot(max_date, train_total[1], 'dodgerblue', linewidth=2.5, label='B')
-line3, = ax1.plot(max_date, train_total[2], 'green', linewidth=2.5, label='C')
+line1, = ax1.plot(max_date, train_total[0], 'darkorange', linewidth=2.5, label='Best Sharpe')
+line2, = ax1.plot(max_date, train_total[1], 'dodgerblue', linewidth=2.5, label='Best Plateau Score')
+line3, = ax1.plot(max_date, train_total[2], 'green', linewidth=2.5, label='GA Plateau Score')
 # test
 ax1.plot(date_index, test_total[0], 'darkorange', linewidth=2.5)
 ax1.plot(date_index, test_total[1], 'dodgerblue', linewidth=2.5)

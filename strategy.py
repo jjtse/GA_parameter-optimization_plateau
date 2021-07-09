@@ -15,8 +15,8 @@ import seaborn as sns
 # D:3至20
 
 def history_data(file_name):
-    csv_file = file_name
-    csv_data = pd.read_csv(csv_file, index_col=0)
+
+    csv_data = pd.read_csv(file_name, index_col=0)
     date_index = list(csv_data.index.values)
     close = csv_data.iloc[0:len(csv_data), 3]
     std = close.rolling(20).std(ddof=0)
@@ -55,7 +55,7 @@ def trade(file_name, ma_value, std_filter):
 
         if num_stock == 0 and stkclose[i] > maprice[i - 1] and stdvalue[i - 1] < std_filter:
             buyvalue = money // (stkclose[i] * 1000)  # 可買之張數
-            buy_how_much = (stkclose[i] * 1000 * buyvalue) - math.ceil((stkclose[i] * 1000 * buyvalue * 0.001425))
+            buy_how_much = (stkclose[i] * 1000 * buyvalue) + math.ceil((stkclose[i] * 1000 * buyvalue * 0.001425))
             money = money - buy_how_much
             num_stock += buyvalue
 
@@ -66,16 +66,12 @@ def trade(file_name, ma_value, std_filter):
             num_stock = 0
             PF.append(how_much)
 
-        # if how_much > 0:
-        #     win_how_much += how_much
-        #
-        # elif how_much < 0:
-        #     loss_how_much += how_much
         profit = stkclose[i] * 1000 * num_stock
         total = profit + money
         total_list.append(total)
         # df = pd.DataFrame(total_list)
         # df.to_csv("total.csv")
+
     for i in PF:
         if i >= 0:
             win_list.append(i)
@@ -100,7 +96,7 @@ def trade(file_name, ma_value, std_filter):
     # else:
     #     average = np.mean(everyday_return_list)
     #     sharpe = np.round((average / std) * (252 ** (1 / 2)), 3)
-    #     profit_factor = sum(win_list) / abs(sum(lose_list))
+    #     # profit_factor = sum(win_list) / abs(sum(lose_list))
     #     return sharpe
 
 
@@ -140,5 +136,6 @@ def sharpe(file_name):
 
 
 if __name__ == '__main__':
-    # sharpe()
-    print(trade(18, 1.9))
+    file_name = '2912.csv'
+    # sharpe(file_name)
+    print(trade(file_name, 18, 1.2))

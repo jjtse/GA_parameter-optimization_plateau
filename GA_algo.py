@@ -56,7 +56,7 @@ def calobjValue(pop):
             obj_value.append(0)
 
         else:
-            obj_value.append(plateau_score(df_list, temp2[i], temp1[i], 5, 0.5))  # 高原分數
+            obj_value.append(plateau_score(df_list, temp2[i], temp1[i], 5, 1))  # 高原分數
 
     return obj_value
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
     time_start = time.time()
 
-    heatmap_df = pd.read_csv("2912_shapre_ratio.csv", index_col=0)
+    heatmap_df = pd.read_csv("3406_shapre_ratio.csv", index_col=0)
     df_list = heatmap_df.values.tolist()
     index_list = list(pd.to_numeric(heatmap_df.index))
     column_list = list(pd.to_numeric(heatmap_df.columns))

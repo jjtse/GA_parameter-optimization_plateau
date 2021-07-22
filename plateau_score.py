@@ -44,7 +44,7 @@ def score_heatmap(heatmap_df):
     for i in range(len(df_list)):
         score.append([])
         for j in range(len(df_list[0])):
-            score[i].append(plateau_score(df_list, i, j, 5, 0.5))  # 高原分數(dataframe, MA, std, n步, 勝率)
+            score[i].append(plateau_score(df_list, i, j, 5, 1))  # 高原分數(dataframe, MA, std, n步, 績效)
 
     score_df = pd.DataFrame(score)
     score_df.index = index_list
@@ -62,7 +62,7 @@ def score_heatmap(heatmap_df):
 if __name__ == '__main__':
     # plateau_score(20,0.4,2,0.03)
 
-    df_list = pd.read_csv("2912_shapre_ratio.csv", index_col=0)
+    df_list = pd.read_csv("3406_shapre_ratio.csv", index_col=0)
     index_list = list(df_list.index.values)
     column_list = list(df_list.columns)
 
